@@ -1,6 +1,6 @@
 # VanillaMobs  
 A plugin that adds creatures to **PocketMine-MP**, inspired by **Minecraft Vanilla mobs**.  
-**WARNING: Plugin in development**
+**❗WARNING: Plugin in development❗**
 
 ## 🌟 Features  
 - Adds **custom creatures** that behave like mobs from Minecraft Vanilla.  
