@@ -1,5 +1,6 @@
 # VanillaMobs  
 A plugin that adds creatures to **PocketMine-MP**, inspired by **Minecraft Vanilla mobs**.  
+**WARNING: Plugin in development**
 
 ## 🌟 Features  
 - Adds **custom creatures** that behave like mobs from Minecraft Vanilla.  
@@ -29,13 +30,6 @@ The mob can then "copy" that movement to find its own way around obstacles.
 ✅ Movement and pathfinding system  
 🔲 Advanced combat mechanics  
 🔲 Breeding and interaction system  
-🔲 Boss entities with special abilities  
-
-## 📦 Installation  
-1. Download the latest release of **VanillaMobs**.  
-2. Put the `.phar` file into your server’s `plugins` folder.  
-3. Restart your server.  
-4. Enjoy the new creatures!  
 
 ## 🤝 Contribution  
 We welcome contributions! You can:  
