@@ -20,6 +20,9 @@ class Zombie extends NocturnalMonster {
 
 	public float $damageAttack = 3;
 
+	protected float $unTargetDistance = 35;
+    protected float $findTargetDistance = 20;
+
 	public function __construct(Location $location, ?CompoundTag $nbt = null, bool $isBaby = false) {
 		parent::__construct($location, $nbt);
 		$this->isBaby = $isBaby;
@@ -66,4 +69,5 @@ class Zombie extends NocturnalMonster {
 	public function getXpDropAmount() : int {
 		return 5;
 	}
+
 }
