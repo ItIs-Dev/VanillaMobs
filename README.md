@@ -9,7 +9,7 @@ A plugin that adds creatures to **PocketMine-MP**, inspired by **Minecraft Vanil
 - Supports **custom animations, sounds, and attributes**.  
 - Designed to be **lightweight and optimized** for PocketMine-MP servers.  
 
-## 🧠 Unique Pathfinding System  
+## 🧠 Pathfinding
 VanillaMobs does not use traditional A* or complex pathfinding algorithms.  
 Instead, it introduces a **player-movement-based pathfinding system**:  
 - Mobs **learn and copy player movements** to find their way.  
