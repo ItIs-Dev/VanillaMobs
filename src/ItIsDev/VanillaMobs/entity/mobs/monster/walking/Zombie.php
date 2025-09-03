@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace ItIsDev\VanillaMobs\entity\mobs;
+namespace ItIsDev\VanillaMobs\entity\mobs\monster\walking;
 
 use ItIsDev\VanillaMobs\entity\trait\WearArmor;
 use ItIsDev\VanillaMobs\entity\types\NocturnalMonster;
@@ -69,5 +69,4 @@ class Zombie extends NocturnalMonster {
 	public function getXpDropAmount() : int {
 		return 5;
 	}
-
 }

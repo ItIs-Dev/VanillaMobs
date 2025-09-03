@@ -28,7 +28,6 @@ class Monster extends BaseEntity {
     protected int $errorMove = 0;
 
     protected int $randomMoveTick = 0;
-
     protected int $randomMoveTickTime = 100; 
 
     public function setTarget(Entity $entity): void {
@@ -45,6 +44,10 @@ class Monster extends BaseEntity {
 
     public function getDamageAttack(): float {
         return $this->damageAttack;
+    }
+
+    public function setDamageAttack(float $v): void {
+        $this->damageAttack = $v;
     }
 
     public function findTarget(): ?Entity {

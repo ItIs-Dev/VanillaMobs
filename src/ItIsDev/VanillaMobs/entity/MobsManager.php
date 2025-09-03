@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ItIsDev\VanillaMobs\entity;
 
-use ItIsDev\VanillaMobs\entity\mobs\Zombie;
+use ItIsDev\VanillaMobs\entity\mobs\animals\walking\Pig;
+use ItIsDev\VanillaMobs\entity\mobs\animals\walking\Sheep;
+use ItIsDev\VanillaMobs\entity\mobs\monster\walking\Zombie;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\nbt\tag\CompoundTag;
@@ -29,11 +31,14 @@ class MobsManager {
 
 	private static function getEntities() : array {
 		return [
-			"Zombie" => Zombie::class,
+			"zombie" => Zombie::class,
+			"sheep" => Sheep::class,
+			"pig" => Pig::class
 		];
 	}
 	public static function getEntity(string $mob, mixed...$args) : ?Entity {
 		$entities = self::getEntities();
+		$mob = strtolower($mob);
 
 		$entity = null;
 		if (isset($entities[$mob])) {
