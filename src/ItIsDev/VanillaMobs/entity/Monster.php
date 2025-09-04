@@ -7,7 +7,6 @@ namespace ItIsDev\VanillaMobs\entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use ItIsDev\VanillaMobs\entity\Entity as BaseEntity;
-use pocketmine\block\Block;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\math\Vector3;
@@ -18,7 +17,7 @@ class Monster extends BaseEntity {
     public float $damageAttack = 2;
     protected $speed = 0.2;
 
-    protected float $attackDistance = 1;
+    protected float $attackDistance = 2;
     protected float $unTargetDistance = 10;
     protected float $findTargetDistance = 10;
 
@@ -50,7 +49,7 @@ class Monster extends BaseEntity {
         $this->damageAttack = $v;
     }
 
-    public function findTarget(): ?Entity {
+    public function findTarget(): ?Player {
         $this->randomMoveTick++;
         if($this->randomMoveTick >= $this->randomMoveTickTime) {
             $xr = mt_rand(-10,10);
@@ -191,9 +190,7 @@ class Monster extends BaseEntity {
 
         if($this->getTarget() === null) {
             $target = $this->findTarget();
-            if($target !== null) {
-                $this->setTarget($target);
-            }
+            if($target !== null and !$target->isCreative()) $this->setTarget($target);
         } else {
             $this->moveToAttack();
         }
