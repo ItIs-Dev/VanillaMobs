@@ -15,7 +15,7 @@ class Monster extends BaseEntity {
 
     protected ?Entity $target = null;
     public float $damageAttack = 2;
-    protected $speed = 0.2;
+    protected float $speed = 0.2;
 
     protected float $attackDistance = 2;
     protected float $unTargetDistance = 10;
@@ -28,6 +28,8 @@ class Monster extends BaseEntity {
 
     protected int $randomMoveTick = 0;
     protected int $randomMoveTickTime = 100; 
+    
+    protected int $attackCooldown = 0;
 
     public function setTarget(Entity $entity): void {
          $this->target = $entity;
@@ -52,8 +54,8 @@ class Monster extends BaseEntity {
     public function findTarget(): ?Player {
         $this->randomMoveTick++;
         if($this->randomMoveTick >= $this->randomMoveTickTime) {
-            $xr = mt_rand(-10,10);
-            $zr = mt_rand(-10, 10);
+            $xr = mt_rand(-5,5);
+            $zr = mt_rand(-5, 5);
             $pos =$this->getPosition()->add($xr, 1, $zr);
             $this->point = $pos;
             $this->randomMoveTick = 0;
@@ -81,39 +83,44 @@ class Monster extends BaseEntity {
         return $near;
     }
 
+    
+
     public function attackTarget(): void {
         $target = $this->getTarget();
-        if($target === null) return;
+        if ($target === null) return;
 
-        if(!$target->isAlive()) {
+        if (!$target->isAlive()) {
             $this->pointToMove = [];
             $this->unTarget();
             return;
         }
 
         $distance = $this->getPosition()->distance($target->getPosition());
-        if($distance > $this->unTargetDistance) {
+        if ($distance > $this->unTargetDistance) {
             $this->pointToMove = [];
             $this->unTarget();
             return;
         }
 
-        if($distance <= $this->attackDistance) {
-            $this->lookAt($target->getPosition());
-            $this->pointToMove = [];
+        if ($distance <= $this->attackDistance) {
+            if ($this->attackCooldown <= 0) {
+                $this->lookAt($target->getPosition());
+                $this->pointToMove = [];
+                $this->setCanMove(false);
 
-            if($this->canMove) $this->setCanMove(false);
-
-            $target->attack(new EntityDamageByEntityEvent(
-                $this, $target,
-                EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                $this->getDamageAttack()
-            ));
-            return;
+                $target->attack(new EntityDamageByEntityEvent(
+                    $this,
+                    $target,
+                    EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                    $this->getDamageAttack()
+                ));
+                $this->attackCooldown = 20;
+            }
         } else {
-            if(!$this->canMove) $this->setCanMove(true);
+            $this->setCanMove(true);
         }
     }
+
 
     public function moveToPoint(): void {
         if($this->pointToMove === []) {
@@ -139,7 +146,7 @@ class Monster extends BaseEntity {
         }
         $this->checkBlock();
         $this->attackTarget();
-        if($this->getPosition()->distance($targetPos) <= 2 and $targetPos->getY() <= $this->getPosition()->getY() + 2) {
+        if($this->getPosition()->distance($targetPos) <= $this->attackDistance and $targetPos->getY() <= $this->getPosition()->getY() + 2) {
             $this->location->pitch = 0;
         }
     }
@@ -150,6 +157,7 @@ class Monster extends BaseEntity {
         if(!$this->isAlive()) {
             return $hasUpdate;
         }
+        if($this->attackCooldown > 0) $this->attackCooldown -= $tickDiff;
 
         if($this->errorMove >= 20) {
             $this->pointToMove = [];
@@ -161,7 +169,7 @@ class Monster extends BaseEntity {
             $point = $this->point;
             $this->moveTo($point);
             $motion = $this->getMotion();
-            if($motion->x <= 0.1 or $motion->y <= 0.1 or $motion->z <= 0.1){
+            if($motion->x <= 0.01 && $motion->z <= 0.01){
                 $this->errorMove++;
             }else{
                 $this->errorMove = 0;

@@ -10,7 +10,7 @@ use pocketmine\math\Vector3;
 
 class Animal extends Entity {
 
-    protected $speed = 0.2;
+    protected float $speed = 0.2;
 
     protected ?Vector3 $point = null;
     protected int $errorMove = 0;
@@ -22,6 +22,12 @@ class Animal extends Entity {
     protected int $panicTick = 0;
     protected float $panicAcceleration = 1;
 
+    protected function getRandomPoint(): Vector3 {
+        $xr = mt_rand(-10, 10);
+        $zr = mt_rand(-10, 10);
+        return $this->getPosition()->add($xr, 1, $zr);
+    }
+
     public function attack(EntityDamageEvent $source) : void {
         parent::attack($source);
 
@@ -30,60 +36,48 @@ class Animal extends Entity {
         $this->panic = true;
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
+        public function entityBaseTick(int $tickDiff = 1): bool {
         $hasUpdate = parent::entityBaseTick($tickDiff);
+        if(!$this->isAlive()) return $hasUpdate;
 
-        if(!$this->isAlive()) {
-            return $hasUpdate;
-        }
-        
-        if($this->panicTick > 0 and $this->panic === true) {
+        if($this->panic && $this->panicTick > 0) {
             if(mt_rand(1, 100) <= 10) {
-                $xr = mt_rand(-10,10);
-                $zr = mt_rand(-10, 10);
-                $pos =$this->getPosition()->add($xr, 1, $zr);
-                $this->point = $pos;
+                $this->point = $this->getRandomPoint();
             }
             $this->panicTick--;
+        } elseif($this->panicTick <= 0) {
+            $this->panic = false;
         }
-
-        if($this->panicTick <= 0 and $this->panic === true) $this->panic = false;
 
         if($this->errorMove >= 20) {
             $this->point = null;
             $this->errorMove = 0;
         }
 
-        $this->randomMoveTick++;
-        if($this->randomMoveTick >= $this->randomMoveTickTime and $this->point === null) {
-            $xr = mt_rand(-10,10);
-            $zr = mt_rand(-10, 10);
-            $pos =$this->getPosition()->add($xr, 1, $zr);
-            $this->point = $pos;
+        if($this->randomMoveTick++ >= $this->randomMoveTickTime && $this->point === null) {
+            $this->point = $this->getRandomPoint();
             $this->randomMoveTick = 0;
         }
 
-        $point = $this->point;
-        if($point !== null) {
-
-            $acceleration = 1;
-
-            if($this->panic == true) $acceleration = $this->panicAcceleration;
-            $this->moveTo($point, $acceleration);
-            $this->lookAt($point);
+        if($this->point !== null) {
+            $acceleration = $this->panic ? $this->panicAcceleration : 1;
+            $this->moveTo($this->point, $acceleration);
+            $this->lookAt($this->point);
             $this->checkBlock();
 
             $motion = $this->getMotion();
-            if($motion->x <= 0.1 or $motion->y <= 0.1 or $motion->z <= 0.1){
+            if($motion->x <= 0.01 && $motion->z <= 0.01) {
                 $this->errorMove++;
-            }else{
+            } else {
                 $this->errorMove = 0;
             }
 
-            if($this->getPosition()->distance($point) <= 0.1) {
+            if($this->getPosition()->distance($this->point) <= 0.1) {
                 $this->point = null;
             }
         }
+
         return $hasUpdate;
     }
+
 }
