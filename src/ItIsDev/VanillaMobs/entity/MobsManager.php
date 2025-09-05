@@ -20,7 +20,9 @@ class MobsManager {
 	}
 
 	private static function registerEntities() : void {
+
 		foreach (self::getEntities() as $name => $class) {
+
 			EntityFactory::getInstance()->register($class, function (World $world, CompoundTag $nbt) use ($class) : Entity {
 				return new $class(EntityDataHelper::parseLocation($nbt, $world), $nbt);
 			}, [$name]);
@@ -31,14 +33,14 @@ class MobsManager {
 
 	private static function getEntities() : array {
 		return [
-			"zombie" => Zombie::class,
-			"sheep" => Sheep::class,
-			"pig" => Pig::class
+			"Zombie" => Zombie::class,
+			"Sheep" => Sheep::class,
+			"Pig" => Pig::class
 		];
 	}
 	public static function getEntity(string $mob, mixed...$args) : ?Entity {
 		$entities = self::getEntities();
-		$mob = strtolower($mob);
+		$mob = ucwords($mob);
 
 		$entity = null;
 		if (isset($entities[$mob])) {

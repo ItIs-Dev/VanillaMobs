@@ -16,7 +16,7 @@ trait WearArmor {
     $leggings = mt_rand(1, 100);
     $boots = mt_rand(1, 100);
 
-    if($helmet <= 10){
+    if($helmet <= 5){
         $roll = mt_rand(1, 100);
         if($roll <= 60){
             $inv->setHelmet(VanillaItems::LEATHER_CAP());
@@ -31,7 +31,7 @@ trait WearArmor {
         }
     }
 
-    if($chestplate <= 10){
+    if($chestplate <= 5){
         $roll = mt_rand(1, 100);
         if($roll <= 60){
             $inv->setChestplate(VanillaItems::LEATHER_TUNIC());
@@ -46,7 +46,7 @@ trait WearArmor {
         }
     }
 
-    if($leggings <= 10){
+    if($leggings <= 5){
         $roll = mt_rand(1, 100);
         if($roll <= 60){
             $inv->setLeggings(VanillaItems::LEATHER_PANTS());
@@ -61,7 +61,7 @@ trait WearArmor {
         }
     }
 
-    if($boots <= 10){
+    if($boots <= 5){
         $roll = mt_rand(1, 100);
         if($roll <= 60){
             $inv->setBoots(VanillaItems::LEATHER_BOOTS());

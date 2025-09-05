@@ -25,7 +25,8 @@ class VanillaMobsCommand extends Command {
             return true;
         }
 
-        $mob = $args[0];
+        $mob = $mob = implode(" ", $args);
+
         $location = $sender->getLocation();
 
         if (MobsManager::summon($mob, $location)) {

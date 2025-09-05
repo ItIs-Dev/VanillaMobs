@@ -20,7 +20,7 @@ class Animal extends Entity {
 
     protected bool $panic = false;
     protected int $panicTick = 0;
-    protected float $panicAcceleration = 3;
+    protected float $panicAcceleration = 1;
 
     public function attack(EntityDamageEvent $source) : void {
         parent::attack($source);
@@ -38,7 +38,7 @@ class Animal extends Entity {
         }
         
         if($this->panicTick > 0 and $this->panic === true) {
-            if(mt_rand(1, 10) <= 5) {
+            if(mt_rand(1, 100) <= 10) {
                 $xr = mt_rand(-10,10);
                 $zr = mt_rand(-10, 10);
                 $pos =$this->getPosition()->add($xr, 1, $zr);
