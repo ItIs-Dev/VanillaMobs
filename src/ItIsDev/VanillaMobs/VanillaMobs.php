@@ -15,8 +15,7 @@ class VanillaMobs extends PluginBase {
 
     public function onEnable(): void {
         $this->getLogger()->info("VanillaMobs plugin has been enabled!");
-
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+        
         $this->getServer()->getCommandMap()->register("vanillamobs", new VanillaMobsCommand());
         MobsManager::init();
     }
@@ -24,4 +23,5 @@ class VanillaMobs extends PluginBase {
     public function onDisable(): void {
         $this->getLogger()->info("VanillaMobs plugin has been disabled!");
     }
+
 }
