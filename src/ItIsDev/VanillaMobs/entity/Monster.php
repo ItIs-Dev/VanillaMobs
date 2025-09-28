@@ -35,7 +35,7 @@ class Monster extends BaseEntity {
          $this->target = $entity;
     }
 
-    public function getTarget(): ?Entity {
+    public function getTarget(): ?Player {
         return $this->target;
     }
 
@@ -261,4 +261,5 @@ class Monster extends BaseEntity {
         }
         return $hasUpdate;
     }
+
 }
