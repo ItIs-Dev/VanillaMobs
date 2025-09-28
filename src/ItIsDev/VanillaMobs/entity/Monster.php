@@ -62,8 +62,6 @@ class Monster extends BaseEntity {
         $groundY = $this->getWorld()->getHighestBlockAt((int)$this->getPosition()->getX(), (int)$this->getPosition()->getZ());
 		
 		$isInShade = $this->getPosition()->getY() < $groundY;
-
-        
 		
 		if($time < 12542 && $inv->getHelmet()->isNull()) {
             if($this->target instanceof Player){
@@ -102,6 +100,8 @@ class Monster extends BaseEntity {
 				}
 			}
 		}
+
+        if($this->target instanceof Player) $this->lookAt($this->target->getPosition());
 
 		$dir = $pos->subtractVector($this->getPosition())->normalize();
 		$step = $dir->multiply($this->getSpeed() * $acceleration);
@@ -261,5 +261,4 @@ class Monster extends BaseEntity {
         }
         return $hasUpdate;
     }
-
 }
