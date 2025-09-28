@@ -8,4 +8,5 @@ projects:
     libs:
      - src: CustomiesDevs/Customies/Customies
        version: ^5.1.3
+       branch: master
 ...
