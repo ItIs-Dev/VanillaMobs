@@ -5,8 +5,4 @@ branches:
 projects:
   VanillaMobs:
     path: ""
-    depend:
-     - src: customiesdevs/customies/Customies
-       version: ^1.4.0
-       branch: master
 ...
