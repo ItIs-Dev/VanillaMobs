@@ -8,7 +8,6 @@ use customiesdevs\customies\item\CreativeInventoryInfo;
 use customiesdevs\customies\item\CustomiesItemFactory;
 use ItIsDev\VanillaMobs\entity\mobs\animals\walking\Pig;
 use ItIsDev\VanillaMobs\entity\mobs\animals\walking\Sheep;
-use ItIsDev\VanillaMobs\entity\mobs\monster\flying\Phantom;
 use ItIsDev\VanillaMobs\entity\mobs\monster\walking\Zombie;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
@@ -41,7 +40,6 @@ class MobsManager {
 			"Zombie" => Zombie::class,
 			"Sheep" => Sheep::class,
 			"Pig" => Pig::class,
-			"Phantom" => Phantom::class
 		];
 	}
 	public static function getEntity(string $mob, mixed...$args) : ?Entity {
@@ -70,4 +68,5 @@ class MobsManager {
 
 		return false;
 	}
+
 }
