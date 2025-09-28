@@ -13,11 +13,11 @@ use pocketmine\math\Vector3;
 
 class Monster extends BaseEntity {
 
-    protected ?Entity $target = null;
+    protected ?Player $target = null;
     public float $damageAttack = 2;
     protected float $speed = 0.2;
 
-    protected float $attackDistance = 2;
+    protected float $attackDistance = 2.5;
     protected float $unTargetDistance = 10;
     protected float $findTargetDistance = 10;
 
@@ -31,7 +31,7 @@ class Monster extends BaseEntity {
     
     protected int $attackCooldown = 0;
 
-    public function setTarget(Entity $entity): void {
+    public function setTarget(Player $entity): void {
          $this->target = $entity;
     }
 
@@ -50,6 +50,63 @@ class Monster extends BaseEntity {
     public function setDamageAttack(float $v): void {
         $this->damageAttack = $v;
     }
+
+    protected function moveTo(Vector3 $pos, float $acceleration = 1) : void {
+		if(!$this->canMove) return;
+
+		$world = $this->getWorld();
+
+        $time = $world->getTimeOfDay();
+
+		$inv = $this->getArmorInventory();
+        $groundY = $this->getWorld()->getHighestBlockAt((int)$this->getPosition()->getX(), (int)$this->getPosition()->getZ());
+		
+		$isInShade = $this->getPosition()->getY() < $groundY;
+
+        
+		
+		if($time < 12542 && $inv->getHelmet()->isNull()) {
+            if($this->target instanceof Player){
+                $targetGroundY = $world->getHighestBlockAt((int)$this->target->getPosition()->getX(), (int)$this->target->getPosition()->getZ());
+                $targetInShade = $this->target->getPosition()->getY() < $targetGroundY;
+                
+                if($targetInShade){
+                    $dir = $pos->subtractVector($this->getPosition())->normalize();
+                    $step = $dir->multiply($this->getSpeed() * $acceleration);
+                    $this->move($step->x, 0, $step->z);
+                    $this->lookAt($this->target->getPosition());
+                    return;
+                }else{
+                    $this->lookAt($this->target->getPosition());
+                }
+            }
+
+			if($isInShade){
+                $pos = $this->getPosition();
+                $this->point = $pos;
+                $this->lookAt($pos);
+			}else{
+				for($i = 0; $i < 10; $i++){
+					$xr = mt_rand(-$i, $i);
+					$zr = mt_rand(-$i, $i);
+					$checkX = (int)$this->getPosition()->getX() + $xr;
+					$checkZ = (int)$this->getPosition()->getZ() + $zr;
+					
+					$highest = $this->getWorld()->getHighestBlockAt($checkX, $checkZ);
+					if($this->getPosition()->getY() < $highest){ 
+						$pos = new Vector3($checkX, $this->getPosition()->getY(), $checkZ);
+						$this->point = $pos;
+                        $this->location->pitch = 0;
+						break;
+					}
+				}
+			}
+		}
+
+		$dir = $pos->subtractVector($this->getPosition())->normalize();
+		$step = $dir->multiply($this->getSpeed() * $acceleration);
+		$this->move($step->x, 0, $step->z);
+	}
 
     public function findTarget(): ?Player {
         $this->randomMoveTick++;
@@ -83,13 +140,11 @@ class Monster extends BaseEntity {
         return $near;
     }
 
-    
-
     public function attackTarget(): void {
         $target = $this->getTarget();
         if ($target === null) return;
 
-        if (!$target->isAlive()) {
+        if (!$target->isAlive() or !$target->isOnline()) {
             $this->pointToMove = [];
             $this->unTarget();
             return;
@@ -130,7 +185,7 @@ class Monster extends BaseEntity {
 
         $point = array_shift($this->pointToMove);
         $this->point = $point;
-        $this->lookAt($point);
+        #$this->lookAt($point);
     }
 
 
@@ -154,12 +209,14 @@ class Monster extends BaseEntity {
     public function entityBaseTick(int $tickDiff = 1): bool {
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        if(!$this->isAlive()) {
-            return $hasUpdate;
-        }
+        if(!$this->isAlive()) return $hasUpdate;
+        
+        $target = $this->getTarget();
+        if($target instanceof Player) if($target->isCreative()) $this->unTarget();
+
         if($this->attackCooldown > 0) $this->attackCooldown -= $tickDiff;
 
-        if($this->errorMove >= 20) {
+        if($this->errorMove >= 2) {
             $this->pointToMove = [];
             $this->errorMove = 0;
             $this->toPoint = false;
@@ -167,7 +224,7 @@ class Monster extends BaseEntity {
 
         if($this->toPoint) {
             $point = $this->point;
-            $this->moveTo($point);
+            $this->moveTo($point, 1);
             $motion = $this->getMotion();
             if($motion->x <= 0.01 && $motion->z <= 0.01){
                 $this->errorMove++;
@@ -180,12 +237,12 @@ class Monster extends BaseEntity {
         }
         
         if($this->getTarget() !== null) {
-            $target = $this->getTarget();
+            
             $targetPos = $target->getPosition()->floor();
             if($this->getPosition()->distance($targetPos) > $this->attackDistance) {
                 if($target instanceof Player) {
                     if($target->isFlying()) {
-                        $this->moveTo($targetPos);
+                        $this->moveTo($targetPos,1);
                         $this->lookAt($targetPos);
                     }else{
                         $this->pointToMove[] = $targetPos;

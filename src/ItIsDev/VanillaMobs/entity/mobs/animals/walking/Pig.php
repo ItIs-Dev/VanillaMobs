@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace ItIsDev\VanillaMobs\entity\mobs\animals\walking;
 
 use ItIsDev\VanillaMobs\entity\Animal;
+use ItIsDev\VanillaMobs\entity\trait\Baby;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;
 use pocketmine\item\StringToItemParser;
@@ -14,13 +15,20 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 
 class Pig extends Animal {
 
-	protected bool $isBaby;
+	use Baby;
 
-	public function __construct(Location $location, ?CompoundTag $nbt = null, bool $isBaby = false) {
+	protected bool|int $isBaby;
+
+	public function __construct(Location $location, ?CompoundTag $nbt = null) {
 		parent::__construct($location, $nbt);
-		$this->isBaby = $isBaby;
 
-		if($isBaby) $this->setScale(0.5);
+		$this->Baby();
+	}
+
+	public function initEntity(CompoundTag $nbt): void {
+		parent::initEntity($nbt);
+
+		$this->isBaby = $nbt->getByte("isBaby", 0);
 	}
 
 	public function getName() : string {
@@ -46,4 +54,6 @@ class Pig extends Animal {
 	public function getXpDropAmount() : int {
 		return mt_rand(1, 3);
 	}
+
+	
 }

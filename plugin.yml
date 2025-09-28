@@ -1,6 +1,6 @@
 name: VanillaMobs
 api: 5.0.0
-version: 1.0.0-Dev
+version: 1.0.1-Dev
 main: ItIsDev\VanillaMobs\VanillaMobs
 author: ItIsDev
 description: A plugin that adds various vanilla mobs to your Minecraft server.
