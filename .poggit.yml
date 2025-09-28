@@ -7,5 +7,5 @@ projects:
     path: ""
     libs:
      - src: CustomiesDevs/Customies/Customies
-       version: ^5.1.0
+       version: ^5.1.3
 ...
