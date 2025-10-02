@@ -6,11 +6,9 @@ namespace ItIsDev\VanillaMobs\entity;
 
 use customiesdevs\customies\item\ItemComponents;
 use customiesdevs\customies\item\ItemComponentsTrait;
-use pocketmine\block\Block;
 use pocketmine\entity\Location;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIdentifier;
-use pocketmine\item\ItemUseResult;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 
