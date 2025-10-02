@@ -7,14 +7,13 @@ namespace ItIsDev\VanillaMobs\entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\player\Player;
 use ItIsDev\VanillaMobs\entity\Entity as BaseEntity;
-use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\math\Vector3;
 
 class Monster extends BaseEntity {
 
     protected ?Player $target = null;
-    public float $damageAttack = 2;
+    protected float $damageAttack = 2;
     protected float $speed = 0.2;
 
     protected float $attackDistance = 2.5;
@@ -53,55 +52,6 @@ class Monster extends BaseEntity {
 
     protected function moveTo(Vector3 $pos, float $acceleration = 1) : void {
 		if(!$this->canMove) return;
-
-		$world = $this->getWorld();
-
-        $time = $world->getTimeOfDay();
-
-		$inv = $this->getArmorInventory();
-        $groundY = $this->getWorld()->getHighestBlockAt((int)$this->getPosition()->getX(), (int)$this->getPosition()->getZ());
-		
-		$isInShade = $this->getPosition()->getY() < $groundY;
-		
-		if($time < 12542 && $inv->getHelmet()->isNull()) {
-            if($this->target instanceof Player){
-                $targetGroundY = $world->getHighestBlockAt((int)$this->target->getPosition()->getX(), (int)$this->target->getPosition()->getZ());
-                $targetInShade = $this->target->getPosition()->getY() < $targetGroundY;
-                
-                if($targetInShade){
-                    $dir = $pos->subtractVector($this->getPosition())->normalize();
-                    $step = $dir->multiply($this->getSpeed() * $acceleration);
-                    $this->move($step->x, 0, $step->z);
-                    $this->lookAt($this->target->getPosition());
-                    return;
-                }else{
-                    $this->lookAt($this->target->getPosition());
-                }
-            }
-
-			if($isInShade){
-                $pos = $this->getPosition();
-                $this->point = $pos;
-                $this->lookAt($pos);
-			}else{
-				for($i = 0; $i < 10; $i++){
-					$xr = mt_rand(-$i, $i);
-					$zr = mt_rand(-$i, $i);
-					$checkX = (int)$this->getPosition()->getX() + $xr;
-					$checkZ = (int)$this->getPosition()->getZ() + $zr;
-					
-					$highest = $this->getWorld()->getHighestBlockAt($checkX, $checkZ);
-					if($this->getPosition()->getY() < $highest){ 
-						$pos = new Vector3($checkX, $this->getPosition()->getY(), $checkZ);
-						$this->point = $pos;
-                        $this->location->pitch = 0;
-						break;
-					}
-				}
-			}
-		}
-
-        if($this->target instanceof Player) $this->lookAt($this->target->getPosition());
 
 		$dir = $pos->subtractVector($this->getPosition())->normalize();
 		$step = $dir->multiply($this->getSpeed() * $acceleration);
@@ -220,6 +170,14 @@ class Monster extends BaseEntity {
             $this->pointToMove = [];
             $this->errorMove = 0;
             $this->toPoint = false;
+
+            $xr = mt_rand(-5,5);
+            $zr = mt_rand(-5, 5);
+            $pos =$this->getPosition()->add($xr, 1, $zr);
+            $this->point = $pos;
+            $this->randomMoveTick = 0;
+
+            if($this->getTarget() !== null) $this->unTarget();
         }
 
         if($this->toPoint) {

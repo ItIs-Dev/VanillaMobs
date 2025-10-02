@@ -5,18 +5,17 @@ declare(strict_types = 1);
 namespace ItIsDev\VanillaMobs\entity\mobs\monster\walking;
 
 use ItIsDev\VanillaMobs\entity\interfaces\Wearable;
-use ItIsDev\VanillaMobs\entity\Monster;
 use ItIsDev\VanillaMobs\entity\trait\Baby;
 use ItIsDev\VanillaMobs\entity\trait\Nocturnal;
 use ItIsDev\VanillaMobs\entity\trait\WearArmor;
+use ItIsDev\VanillaMobs\entity\types\NocturnalMonster;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Location;
 use pocketmine\item\VanillaItems;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 
-class Zombie extends Monster implements Wearable {
+class Zombie extends NocturnalMonster implements Wearable {
 
 	use Nocturnal;
 	use WearArmor;
